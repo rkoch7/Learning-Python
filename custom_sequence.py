@@ -1,5 +1,4 @@
 #immutable type sequence
-
 from functools import lru_cache
 
 class Fib:
@@ -20,8 +19,6 @@ class Fib:
         else:
             rng = range(*s.indices(self.n))
             return [Fib._fib(i) for i in rng]
-
-
     
     @staticmethod
     @lru_cache(2**10)
@@ -32,5 +29,9 @@ class Fib:
     
 fib = Fib(10)
 print(fib[0:4])
-print(fib(-1:-4:-1))
+print(fib[-1:-4:-1])
 print(list(fib))
+
+l1 = [1,2,3]
+l1 += range(7, 10)
+
