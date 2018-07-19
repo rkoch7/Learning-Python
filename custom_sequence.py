@@ -34,4 +34,4 @@ print(list(fib))
 
 l1 = [1,2,3]
 l1 += range(7, 10)
-
+print(l1)
