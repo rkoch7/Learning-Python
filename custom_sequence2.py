@@ -1,5 +1,4 @@
 import numbers
-
 class Point:
 
     def __init__(self, x, y):
@@ -43,7 +42,6 @@ class Polygon:
         else:
             raise TypeError('can only concatenate with another Polygon')
     
-    
     def append(self, pt):
         self._pts.append(Point(*pt))
     
@@ -61,12 +59,41 @@ class Polygon:
     def __iadd__(self, other):
         self.extend(other)
         return self
+    
+    def __setitem__(self, s, value):
+        try:
+            rhs = [Point(*pt) for pt in value]
+            is_single = False
+        except TypeError:
+            try:
+                rhs = Point(*value)
+                is_single =True
+            except TypeError:
+                raise TypeError("Invalid Point or iterable of Points")
+        
+        if (isinstance(s, int) and is_single) \
+                or (isinstance(s, slice) and not is_single):
+                self._pts[s] = rhs
+        
+        else:
+            raise TypeError("Incompatible index/slice assignment")
+    
+
+    def __delitem__(self, s):
+        del self._pts[s]
+    
+
+    def pop(self, i):
+        return self._pts(i)
 
 
 
-p = Polygon((0,0), [1,6], Point(8,9))
-p1 = Polygon((7,8), (8,8))
-
-print(id(p1), id(p))
-p.extend(p1)
+p = Polygon((0,0), [1,6], Point(8,9),(7,8), (8,8))
 print(p)
+p[0:2] = [(66, 99), (78, 45)]
+print(p)
+p[0] = Point(5, 90)
+print(p)
+del p[0]
+print(p)
+print(p.pop(0))
