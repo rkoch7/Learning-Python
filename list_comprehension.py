@@ -46,4 +46,3 @@ funcs = [lambda x, p=i:x**p for i in range(5)]
 #default variables are evaluated at compile time
 print(funcs[0](10))
 print(funcs[1](10))
-
