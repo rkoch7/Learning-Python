@@ -4,9 +4,10 @@ class Polygon:
 
     def __init__(self, n, R):
         if n < 3:
-            raise ValueError("Ploygon atleast needs 3 sides")
+            raise ValueError("Polygon atleast needs 3 sides")
         self._n = n
         self._R = R
+        self._calculated_props_cache = {}
     
     def __repr__(self):
         return f"Polygon(n={self._n}, R={self._R})"
@@ -25,23 +26,38 @@ class Polygon:
 
     @property
     def interior_angle(self):
-        return ((self._n) - 2) * 180 / self._n
+        if self._calculated_props_cache.get("interior_angle", None) is None:
+             self._calculated_props_cache["interior_angle"] = ((self._n) - 2) * 180 / self._n
+        return self._calculated_props_cache["interior_angle"]
     
     @property
     def side_length(self):
-        return 2 * self._R * math.sin(math.pi / self._n)
+        if self._calculated_props_cache.get("side_length", None) is None:
+            self._calculated_props_cache["side_length"] =  2 * self._R * math.sin(math.pi / self._n)
+
+        return self._calculated_props_cache["side_length"]
     
     @property
     def apothem(self):
-        return self._R * math.cos(math.pi / self._n)
+        if self._calculated_props_cache.get("apothem", None) is None:
+            self._calculated_props_cache["apothem"] = self._R * math.cos(math.pi / self._n)
+        
+        return self._calculated_props_cache["apothem"]
+        
     
     @property
     def area(self):
-        return self._n / 2 * self.side_length * self.apothem
+        if self._calculated_props_cache.get("area", None) is None:
+            self._calculated_props_cache["area"] = self._n / 2 * self.side_length * self.apothem
+
+        return self._calculated_props_cache["area"]
     
     @property
     def perimeter(self):
-        return self._n * self.side_length
+        if self._calculated_props_cache.get("perimeter", None) is None:
+            self._calculated_props_cache["perimeter"] = self._n * self.side_length
+
+        return self._calculated_props_cache["perimeter"] 
     
     def __eq__(self, other):
         if isinstance(other, self.__class__):
@@ -66,8 +82,6 @@ class Polygons:
             raise ValueError('m must be greater than 3')
         self._m = m
         self._R = R
-        self._polygons = [Polygon(i, R) for i in range(3, m+1)]
-
     
     def __len__(self):
         return self._m - 2
@@ -75,10 +89,37 @@ class Polygons:
     def __repr__(self):
         return f'Polygons(m={self._m}, R={self._R})'
     
-    def __getitem__(self, s):
-        return s._polygons[s]
-
+    def __iter__(self):
+        return self.PolygonIter(self._m, self._R)
     
+
+    class PolygonIter:
+
+        def __init__(self, m, R):
+            if m < 3:
+                raise ValueError("Polygon atleast needs 3 sides")
+            self._m = m
+            self._R = R
+            self._i = 3
+
+        def __iter__(self):
+            return self
+        
+        def __next__(self):
+            if self._i > self._m:
+                raise StopIteration
+            result = Polygon(self._i , self._R)
+            self._i += 1
+            return result
+
+p = Polygons(5, 1)
+for i in p:
+    print(i)
+
+p1 = Polygons(6, 3)
+p_iter = iter(p1)
+print(next(p_iter))
+
 
 def test_polygon():
     n = 3
