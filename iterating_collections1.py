@@ -3,7 +3,7 @@ class Squares:
     def __init__(self, length):
         self.i = 0
         self.length = length
-    
+
     def __next__(self):
         print("__next__ was called")
         if self.i >= self.length:
@@ -12,7 +12,7 @@ class Squares:
             result = self.i ** 2
             self.i += 1
             return result
-    
+
     def __iter__(self):
         print("__iter__ was called")
         return self
